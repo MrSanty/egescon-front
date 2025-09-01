@@ -20,10 +20,10 @@ import Logo from "@/public/images/logo.png"
 
 const menuGroups = {
   'Configuración': [
-    { name: 'Usuarios', icon: <UserIcon className="size-5" />, href: '/dashboard/usuarios' },
-    { name: 'Empresas', icon: <BuildingIcon className="size-5" />, href: '/dashboard/empresas' },
+    { name: 'Usuarios', icon: <UserIcon className="size-5" />, href: '/dashboard/users' },
+    { name: 'Empresas', icon: <BuildingIcon className="size-5" />, href: '/dashboard/companies' },
     { name: 'Roles', icon: <ShieldCheckIcon className="size-5" />, href: '/dashboard/roles' },
-    { name: 'Parámetros', icon: <SettingsIcon className="size-5" />, href: '/dashboard/parametros' },
+    { name: 'Parámetros', icon: <SettingsIcon className="size-5" />, href: '/dashboard/settings' },
   ],
   "PAA": [],
   "Radicación": [],

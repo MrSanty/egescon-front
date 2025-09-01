@@ -1,9 +1,9 @@
 'use client'
 
 import { FC } from "react"
-import { Sidebar } from "./components/SideBar"
-import { NavBar } from "./components/NavBar"
-import { Footer } from "./components/Footer"
+import { Sidebar } from "./(home)/components/SideBar"
+import { NavBar } from "./(home)/components/NavBar"
+import { Footer } from "./(home)/components/Footer"
 import { useUiStore } from "@/stores"
 
 interface DashboardLayoutProps {

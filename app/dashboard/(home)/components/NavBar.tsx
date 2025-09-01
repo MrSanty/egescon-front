@@ -36,7 +36,7 @@ export const NavBar = () => {
           {isSidebarOpen ? <ChevronLeftIcon className="size-6" /> : <ChevronRightIcon className="size-6" />}
         </button>
 
-        <Breadcrumbs className="text-zinc-700 ml-5" separator=">">
+        <Breadcrumbs className="text-zinc-700 ml-5">
           {
             pathname.split('/').filter(Boolean).map((segment, index, array) => (
               <BreadcrumbItem key={segment} href={`/${array.slice(0, index + 1).join('/')}`}>

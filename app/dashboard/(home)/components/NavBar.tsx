@@ -9,6 +9,7 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon, MenuIcon } from "@/components/icons"
 import { useNavbar } from "@/hooks"
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/react"
+import { useEffect, useState } from "react"
 
 export const NavBar = () => {
   const {
@@ -18,6 +19,12 @@ export const NavBar = () => {
     handleLogout,
     pathname
   } = useNavbar();
+
+  const [ isClient, setIsClient ] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   return (
     <header className="header flex items-center justify-between px-2 py-2 lg:pl-3 lg:pr-5">
@@ -36,14 +43,18 @@ export const NavBar = () => {
           {isSidebarOpen ? <ChevronLeftIcon className="size-6" /> : <ChevronRightIcon className="size-6" />}
         </button>
 
-        <Breadcrumbs className="text-zinc-700 ml-5">
-          {
-            pathname.split('/').filter(Boolean).map((segment, index, array) => (
-              <BreadcrumbItem key={segment} href={`/${array.slice(0, index + 1).join('/')}`}>
-                {segment}
-              </BreadcrumbItem>
-            ))}
-        </Breadcrumbs>
+        {
+          isClient && (
+            <Breadcrumbs className="text-zinc-700 ml-5">
+              {
+                pathname.split('/').filter(Boolean).map((segment, index, array) => (
+                  <BreadcrumbItem key={segment} href={`/${array.slice(0, index + 1).join('/')}`}>
+                    {segment}
+                  </BreadcrumbItem>
+                ))}
+            </Breadcrumbs>
+          )
+        }
       </div>
       <div className="flex items-center">
         <Dropdown

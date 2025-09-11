@@ -8,7 +8,7 @@ const loading = () => {
     <>
       <div className="bg-zinc-50 p-5 rounded-md">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Usuarios</h2>
+          <h2 className="text-2xl font-bold">Compañias</h2>
           <Skeleton className="flex rounded-sm w-12 h-12 sm:hidden" />
         </div>
         <div className="flex justify-end items-center mb-3">

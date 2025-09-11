@@ -1,5 +1,8 @@
 // auth
-export * from './auth/loginService';
+export * from './loginService';
 
-// users
-export * from './users/userService';
+// companies
+export * from './companyService';
+
+// roles
+export * from './roleService';

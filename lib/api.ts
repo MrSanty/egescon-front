@@ -12,6 +12,43 @@ export class ApiError extends Error {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api';
 
+let isRefreshing = false;
+
+let failedQueue: Array<{ resolve: (value?: any) => void; reject: (reason?: any) => void }> = [];
+
+const processQueue = (error: Error | null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve();
+    }
+  });
+
+  failedQueue = [];
+};
+
+const refreshToken = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      const refreshError = new Error('Session expired');
+      processQueue(refreshError);
+      window.location.href = '/login';
+      return Promise.reject(refreshError);
+    }
+
+    processQueue(null);
+    return Promise.resolve();
+  } finally {
+    isRefreshing = false;
+  }
+};
+
 async function apiRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
 
@@ -37,6 +74,18 @@ async function apiRequest<T>(endpoint: string, options?: RequestInit): Promise<T
 
     return response.json() as Promise<T>;
   } catch (error) {
+    if (error instanceof ApiError && error.body.statusCode === 401) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(() => apiRequest<T>(endpoint, options));
+      }
+
+      isRefreshing = true;
+
+      return refreshToken().then(() => apiRequest<T>(endpoint, options));
+    }
+
     if (error instanceof ApiError) {
       throw error;
     }

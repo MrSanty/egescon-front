@@ -1,2 +1,8 @@
 // auth
-export * from './auth/LoginSchema';
+export * from './loginSchema';
+
+// company
+export * from './companySchema';
+
+// role
+export * from './roleSchema';

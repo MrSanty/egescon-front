@@ -1,5 +1,5 @@
 // ui
-export * from './dashboard/uiStore';
+export * from './uiStore';
 
 // login
-export * from './auth/loginStore';
+export * from './loginStore';

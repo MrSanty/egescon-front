@@ -13,27 +13,30 @@ import {
   SettingsIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  CloseIcon
+  CloseIcon,
+  BriefcaseIcon
 } from "@/components/icons"
 import { cn } from "@/lib"
 import Logo from "@/public/images/logo.png"
+import { Permission } from "@/types/permissions"
+import { useLoginStore } from "@/stores"
 
 const menuGroups = {
   'Configuración': [
-    { name: 'Usuarios', icon: <UserIcon className="size-5" />, href: '/dashboard/users' },
-    { name: 'Empresas', icon: <BuildingIcon className="size-5" />, href: '/dashboard/companies' },
-    { name: 'Roles', icon: <ShieldCheckIcon className="size-5" />, href: '/dashboard/roles' },
-    { name: 'Parámetros', icon: <SettingsIcon className="size-5" />, href: '/dashboard/settings' },
+    { name: 'Usuarios', icon: <UserIcon className="size-5" />, href: '/dashboard/users', permission: Permission.USER_READ },
+    { name: 'Empresas', icon: <BuildingIcon className="size-5" />, href: '/dashboard/companies', permission: Permission.COMPANY_READ },
+    { name: 'Roles', icon: <ShieldCheckIcon className="size-5" />, href: '/dashboard/roles', permission: Permission.ROLE_READ },
+    { name: 'Contratistas', icon: <BriefcaseIcon className="size-5" />, href: '/dashboard/contractors', permission: Permission.USER_READ },
+    { name: 'Parámetros', icon: <SettingsIcon className="size-5" />, href: '/dashboard/settings', permission: Permission.PARAMETERS_UPDATE },
   ],
-  "PAA": [],
-  "Radicación": [],
   'Ejecución': [
-    { name: 'Contratos', icon: <FileTextIcon className="size-5" />, href: '/dashboard/contratos' },
-    { name: 'Informes', icon: <ChartIcon className="size-5" />, href: '/dashboard/informes' },
+    { name: 'Contratos', icon: <FileTextIcon className="size-5" />, href: '/dashboard/contracts', permission: Permission.CONTRACT_READ },
+    { name: 'Informes', icon: <ChartIcon className="size-5" />, href: '/dashboard/reports', permission: Permission.REPORTS_READ },
   ]
 }
 
 export const Sidebar = () => {
+  const { permissions } = useLoginStore()
   const pathname = usePathname()
   const {
     isSidebarOpen,
@@ -44,7 +47,12 @@ export const Sidebar = () => {
 
   const renderLinks = (items: typeof menuGroups[ keyof typeof menuGroups ]) => {
     return items.map((link) => {
-      const isActive = pathname === link.href
+      // Si el usuario no tiene permisos, no renderizamos el link
+      if (!permissions?.includes(link.permission)) {
+        return null;
+      }
+
+      const isActive = pathname.startsWith(link.href)
 
       return (
         <Link

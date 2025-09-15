@@ -3,12 +3,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAllRoles } from '@/services';
 
-export const useRoles = () => {
-  // Por ahora, solo obtenemos todos los roles.
-  // Se puede añadir un filtro por nombre similar a `useCompanies` si es necesario.
+export const useRoles = (companyId?: string) => {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['roles'],
-    queryFn: getAllRoles,
+    queryKey: ['roles', companyId],
+    queryFn: () => getAllRoles(companyId),
   });
 
   return {

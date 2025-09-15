@@ -24,8 +24,19 @@ export const useCreateUser = ({ onSuccess, onError }: UseCreateUserProps) => {
     formState: { errors, isSubmitting },
     reset,
     control,
+    watch,
+    setValue,
   } = useForm<CreateUserPayload>({
     resolver: zodResolver(UserSchema),
+    // Lógica mejorada: establecemos el companyId por defecto aquí.
+    defaultValues: {
+      name: '',
+      email: '',
+      docNum: '',
+      // Si no es superAdmin, se asigna su companyId. Si lo es, empieza vacío.
+      companyId: isSuperAdmin ? undefined : companyId || undefined,
+      roleId: '',
+    },
   });
 
   const mutation = useMutation({
@@ -33,7 +44,7 @@ export const useCreateUser = ({ onSuccess, onError }: UseCreateUserProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
       reset();
-      toast.success('Usuario creado exitosamente. Se ha enviado un correo con la contraseña.');
+      toast.success('Usuario creado. Se ha enviado un correo con la contraseña.');
       onSuccess?.();
     },
     onError: (error: ApiError) => {
@@ -43,18 +54,12 @@ export const useCreateUser = ({ onSuccess, onError }: UseCreateUserProps) => {
   });
 
   const onSubmit = (data: CreateUserPayload) => {
-    const rawCompanyId = isSuperAdmin ? data.companyId : companyId;
-    const finalData = {
-      ...data,
-      companyId: typeof rawCompanyId === 'string' ? rawCompanyId : undefined,
-    };
-    
-    if (!finalData.companyId) {
-        toast.error('Es necesario seleccionar una compañía.');
-        return;
+    // La data ya viene con el companyId correcto, no se necesita lógica extra.
+    if (!data.companyId) {
+      toast.error('Es necesario asignar una compañía al usuario.');
+      return;
     }
-
-    mutation.mutate(finalData);
+    mutation.mutate(data);
   };
 
   return {
@@ -62,6 +67,8 @@ export const useCreateUser = ({ onSuccess, onError }: UseCreateUserProps) => {
     handleSubmit: handleSubmit(onSubmit),
     errors,
     control,
+    watch,
+    setValue,
     isSubmitting: isSubmitting || mutation.isPending,
   };
 };

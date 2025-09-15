@@ -2,7 +2,7 @@
 
 import { FC } from 'react';
 import { useCreateUser, useRoles, useCompanies } from '@/hooks';
-import { Button, Input, Select, SelectItem, Spinner } from '@heroui/react';
+import { Button, Input, Select, SelectItem } from '@heroui/react';
 import { Controller } from 'react-hook-form';
 import { DocType } from '@/types';
 import { useLoginStore } from '@/stores';
@@ -12,13 +12,16 @@ interface CreateUserFormProps {
 }
 
 export const CreateUserForm: FC<CreateUserFormProps> = ({ onClose }) => {
-  const { register, handleSubmit, control, errors, isSubmitting } = useCreateUser({
-    onSuccess: onClose,
-  });
+  const { register, handleSubmit, control, errors, isSubmitting, watch, setValue } =
+    useCreateUser({
+      onSuccess: onClose,
+    });
 
   const { isSuperAdmin } = useLoginStore();
-  const { roles, isLoading: isLoadingRoles } = useRoles();
+  const selectedCompanyId = watch('companyId');
+
   const { companies, isLoading: isLoadingCompanies } = useCompanies();
+  const { roles, isLoading: isLoadingRoles } = useRoles(selectedCompanyId);
 
   const docTypes = Object.values(DocType);
 
@@ -59,7 +62,9 @@ export const CreateUserForm: FC<CreateUserFormProps> = ({ onClose }) => {
               errorMessage={errors.docType?.message}
             >
               {docTypes.map((type) => (
-                <SelectItem key={type}>{type}</SelectItem>
+                <SelectItem key={type}>
+                  {type}
+                </SelectItem>
               ))}
             </Select>
           )}
@@ -85,12 +90,17 @@ export const CreateUserForm: FC<CreateUserFormProps> = ({ onClose }) => {
                 placeholder="Seleccione una compañía"
                 isLoading={isLoadingCompanies}
                 selectedKeys={field.value ? [ field.value ] : []}
-                onChange={(e) => field.onChange(e.target.value)}
+                onChange={(e) => {
+                  field.onChange(e.target.value);
+                  setValue('roleId', ''); // Resetea el rol al cambiar de compañía
+                }}
                 isInvalid={!!errors.companyId}
                 errorMessage={errors.companyId?.message}
               >
                 {companies.map((company) => (
-                  <SelectItem key={company.id}>{company.name}</SelectItem>
+                  <SelectItem key={company.id}>
+                    {company.name}
+                  </SelectItem>
                 ))}
               </Select>
             )}
@@ -104,25 +114,40 @@ export const CreateUserForm: FC<CreateUserFormProps> = ({ onClose }) => {
               label="Rol"
               labelPlacement="outside"
               variant="bordered"
-              placeholder="Seleccione un rol"
+              placeholder={
+                !selectedCompanyId ? 'Selecciona una compañía' : 'Selecciona un rol'
+              }
               isLoading={isLoadingRoles}
               selectedKeys={field.value ? [ field.value ] : []}
               onChange={(e) => field.onChange(e.target.value)}
               isInvalid={!!errors.roleId}
               errorMessage={errors.roleId?.message}
+              isDisabled={!selectedCompanyId || isLoadingRoles}
             >
               {roles.map((role) => (
-                <SelectItem key={role.id}>{role.name}</SelectItem>
+                <SelectItem key={role.id}>
+                  {role.name}
+                </SelectItem>
               ))}
             </Select>
           )}
         />
       </div>
       <div className="grid grid-cols-2 gap-5 pt-4">
-        <Button size="sm" variant="light" onPress={onClose} disabled={isSubmitting}>
+        <Button
+          size="sm"
+          variant="light"
+          onPress={onClose}
+          disabled={isSubmitting}
+        >
           Cancelar
         </Button>
-        <Button size="sm" className="bg-zinc-900 text-white" type="submit" isLoading={isSubmitting}>
+        <Button
+          size="sm"
+          className="bg-zinc-900 text-white"
+          type="submit"
+          isLoading={isSubmitting}
+        >
           {isSubmitting ? 'Creando Usuario...' : 'Crear Usuario'}
         </Button>
       </div>

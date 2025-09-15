@@ -18,7 +18,7 @@ interface UseUpdateUserProps {
 export const useUpdateUser = ({ id, onSuccess, onError }: UseUpdateUserProps) => {
   const queryClient = useQueryClient();
 
-  const { data: user, isLoading: isLoadingUser } = useQuery({
+  const { data: userResponse, isLoading: isLoadingUser } = useQuery({
     queryKey: ['user', id],
     queryFn: () => getUserById(id),
     enabled: !!id,
@@ -30,15 +30,27 @@ export const useUpdateUser = ({ id, onSuccess, onError }: UseUpdateUserProps) =>
     formState: { errors, isSubmitting },
     reset,
     control,
+    watch,
+    setValue,
   } = useForm<UpdateUserPayload>({
     resolver: zodResolver(UpdateUserSchema),
   });
 
+  // Efecto mejorado para popular el formulario
   useEffect(() => {
-    if (user?.data) {
-      reset(user.data);
+    const userData = userResponse?.data;
+    if (userData) {
+      const formValues = {
+        name: userData.name,
+        email: userData.email,
+        docType: userData.docType,
+        docNum: userData.docNum,
+        companyId: userData.companyId,
+        roleId: userData.roleId,
+      };
+      reset(formValues);
     }
-  }, [user, reset]);
+  }, [userResponse, reset]);
 
   const mutation = useMutation({
     mutationFn: (data: UpdateUserPayload) => updateUser(id, data),
@@ -63,7 +75,8 @@ export const useUpdateUser = ({ id, onSuccess, onError }: UseUpdateUserProps) =>
     handleSubmit: handleSubmit(onSubmit),
     errors,
     control,
-    user: user?.data,
+    watch,
+    setValue,
     isSubmitting: isSubmitting || mutation.isPending,
     isLoadingUser,
   };

@@ -6,8 +6,9 @@ export const getAllPermissions = async (): Promise<SuccessResponse<Permission[]>
   return await api.get<SuccessResponse<Permission[]>>('/roles/permissions');
 };
 
-export const getAllRoles = async (): Promise<SuccessResponse<Role[]>> => {
-  return await api.get<SuccessResponse<Role[]>>('/roles');
+export const getAllRoles = async (companyId?: string): Promise<SuccessResponse<Role[]>> => {
+  const endpoint = companyId ? `/roles?companyId=${companyId}` : '/roles';
+  return await api.get<SuccessResponse<Role[]>>(endpoint);
 };
 
 export const getRoleById = async (id: string): Promise<SuccessResponse<Role>> => {

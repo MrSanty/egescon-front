@@ -1,4 +1,4 @@
-import { Menu } from '../shared/response';
+import { Menu } from './response';
 
 export interface LoginResponseData {
   id: string;
@@ -6,6 +6,7 @@ export interface LoginResponseData {
   name: string;
   companyId: string;
   nit: string;
+  isSuperAdmin: boolean;
   permissions: string[];
   menus: Menu[];
 }

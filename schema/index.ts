@@ -6,3 +6,6 @@ export * from './companySchema';
 
 // role
 export * from './roleSchema';
+
+// user
+export * from './userSchema';

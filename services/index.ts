@@ -6,3 +6,6 @@ export * from './companyService';
 
 // roles
 export * from './roleService';
+
+// users
+export * from './userService';

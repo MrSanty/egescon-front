@@ -1,6 +1,6 @@
 import { api } from '@/lib';
 import { CreateCompanyPayload, UpdateCompanyPayload } from '@/schema';
-import { Company, SuccessResponse } from '@/types';
+import { SuccessResponse, Company } from '@/types';
 
 interface GetCompaniesParams {
   name?: string;

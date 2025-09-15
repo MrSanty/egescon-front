@@ -14,9 +14,9 @@ export const CompanyClientPage = () => {
   const { companies, isLoading, searchTerm, setSearchTerm } = useCompanies()
 
   // Estados para controlar los modales y la compañía seleccionada
-  const [isCreateOpen, setCreateOpen] = useState(false)
-  const [companyToEdit, setCompanyToEdit] = useState<Company | null>(null)
-  const [companyToDelete, setCompanyToDelete] = useState<Company | null>(null)
+  const [ isCreateOpen, setCreateOpen ] = useState(false)
+  const [ companyToEdit, setCompanyToEdit ] = useState<Company | null>(null)
+  const [ companyToDelete, setCompanyToDelete ] = useState<Company | null>(null)
 
   return (
     <>

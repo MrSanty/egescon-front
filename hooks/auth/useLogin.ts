@@ -15,8 +15,16 @@ interface UseLoginProps {
 }
 
 export const useLogin = ({ onSuccess, onError }: UseLoginProps) => {
-  const { setName, setEmail, setPermissions, setCompanyId, setMenu, setNit, setId } =
-    useLoginStore();
+  const {
+    setName,
+    setEmail,
+    setPermissions,
+    setCompanyId,
+    setMenu,
+    setNit,
+    setId,
+    setIsSuperAdmin,
+  } = useLoginStore();
   const [isVisible, setIsVisible] = useState(false);
   const router = useRouter();
   const {
@@ -38,6 +46,7 @@ export const useLogin = ({ onSuccess, onError }: UseLoginProps) => {
       setEmail(userData.email);
       setCompanyId(userData.companyId);
       setNit(userData.nit);
+      setIsSuperAdmin(userData.isSuperAdmin || false);
       setPermissions(userData.permissions);
       setMenu(userData.menus);
 
